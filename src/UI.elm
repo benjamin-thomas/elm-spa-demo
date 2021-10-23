@@ -26,6 +26,7 @@ layout children =
             , viewLink "Advanced" Route.Advanced
             , viewLink "Stateful" Route.Stateful
             , Html.div [ Attr.class "splitter" ] []
+            , viewLink "Sign in" Route.SignIn
             , viewLink "Dynamic: Apple" (Route.Dynamic__Name_ { name = "apple" })
             , viewLink "Dynamic: Banana" (Route.Dynamic__Name_ { name = "banana" })
             ]
