@@ -1,11 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <script src="/dist/elm.js"></script>
-  <script> Elm.Main.init() </script>
+<script src="/dist/elm.js"></script>
+<script>
+    const app = Elm.Main.init({
+        flags: JSON.parse(localStorage.getItem('storage'))
+    });
+
+    app.ports.save.subscribe(storage => {
+        localStorage.setItem('storage', JSON.stringify(storage))
+        app.ports.load.send(storage);
+    })
+
+</script>
 </body>
 </html>
