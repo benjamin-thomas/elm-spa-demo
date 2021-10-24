@@ -17,14 +17,25 @@ toJson user =
         [ ( "name", Json.Encode.string user.name ) ]
 
 
-userDecoder : Json.Decode.Decoder Store.User
-userDecoder =
-    Json.Decode.map Store.User
-        (Json.Decode.field "name" Json.Decode.string)
-
-
-fromJson : Json.Decode.Value -> Maybe Store.User
+fromJson : Json.Decode.Value -> Store.User
 fromJson json =
     json
-        |> Json.Decode.decodeValue userDecoder
-        |> Result.toMaybe
+        |> Json.Decode.decodeValue Store.userDecoder
+        |> Result.withDefault Store.initial.user
+
+
+setUser : Store.User -> Cmd msg
+setUser user =
+    { user | name = user.name }
+        |> toJson
+        |> saveUser
+
+
+unsetUser : Cmd msg
+unsetUser =
+    Json.Encode.null |> saveUser
+
+
+onChange : (Store.User -> msg) -> Sub msg
+onChange user =
+    loadUser (\json -> fromJson json |> user)

@@ -47,5 +47,5 @@ decrement score =
 
 
 onChange : (Store.Score -> msg) -> Sub msg
-onChange fromScore =
-    loadScore (\json -> fromJson json |> fromScore)
+onChange score =
+    loadScore (\json -> fromJson json |> score)

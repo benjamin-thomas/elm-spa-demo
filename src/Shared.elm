@@ -39,7 +39,7 @@ type alias Model =
 type Msg
     = SignIn User
     | SignOut
-    | ScoreUpdated Store.Score
+    | UpdateScore Store.Score
 
 
 init : Request -> Flags -> ( Model, Cmd Msg )
@@ -72,10 +72,10 @@ update req msg model =
                 ]
             )
 
-        ScoreUpdated score ->
+        UpdateScore score ->
             ( { model | score = score }, Cmd.none )
 
 
 subscriptions : Request -> Model -> Sub Msg
 subscriptions _ _ =
-    Ports.Score.onChange ScoreUpdated
+    Ports.Score.onChange UpdateScore
