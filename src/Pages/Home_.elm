@@ -59,7 +59,7 @@ view req user _ =
     , body =
         UI.layout
             [ Html.h1 [] [ Html.text <| "Welcome back " ++ user.name ++ "!!" ]
-            , Html.h2 [] [ Html.text <| "Your (still) are on server: " ++ req.url.host ++ "!!" ]
+            , Html.h2 [] [ Html.text <| "You're (still) are on server: " ++ req.url.host ++ "!!" ]
             , Html.p []
                 [ Html.button [ Html.Events.onClick SignOut ] [ Html.text "Sign out" ] ]
             ]
