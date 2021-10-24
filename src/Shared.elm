@@ -16,8 +16,9 @@ module Shared exposing
 
 import Gen.Route
 import Json.Decode as Json
-import Ports.Score exposing (Score)
+import Ports.Score
 import Request exposing (Request)
+import Store
 
 
 type alias Flags =
@@ -30,7 +31,7 @@ type alias User =
 
 
 type alias Model =
-    { score : Score
+    { score : Store.Score
     , user : Maybe User
     }
 
@@ -38,12 +39,12 @@ type alias Model =
 type Msg
     = SignIn User
     | SignOut
-    | ScoreUpdated Score
+    | ScoreUpdated Store.Score
 
 
 init : Request -> Flags -> ( Model, Cmd Msg )
 init _ flags =
-    ( { score = (Ports.Score.decodeStore flags).score
+    ( { score = (Store.decodeStore flags).score
       , user = Nothing
       }
     , Cmd.none

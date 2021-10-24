@@ -4,9 +4,10 @@ import Gen.Params.Statefull exposing (Params)
 import Html
 import Html.Events
 import Page
-import Ports.Score exposing (Score)
+import Ports.Score
 import Request exposing (Request)
 import Shared
+import Store
 import UI
 import View exposing (View)
 
@@ -43,7 +44,7 @@ type Msg
     | Dec
 
 
-update : Score -> Msg -> Model -> ( Model, Cmd Msg )
+update : Store.Score -> Msg -> Model -> ( Model, Cmd Msg )
 update score msg model =
     case msg of
         Inc ->
@@ -61,7 +62,7 @@ update score msg model =
 -- VIEW
 
 
-view : Score -> Request -> Model -> View Msg
+view : Store.Score -> Request -> Model -> View Msg
 view score req _ =
     { title = "Static"
     , body =
