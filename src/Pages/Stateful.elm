@@ -4,8 +4,8 @@ import Gen.Params.Statefull exposing (Params)
 import Html
 import Html.Events
 import Page
+import Ports.Score exposing (Score)
 import Request exposing (Request)
-import Score exposing (Score)
 import Shared
 import UI
 import View exposing (View)
@@ -48,12 +48,12 @@ update score msg model =
     case msg of
         Inc ->
             ( model
-            , Score.increment score
+            , Ports.Score.increment score
             )
 
         Dec ->
             ( model
-            , Score.decrement score
+            , Ports.Score.decrement score
             )
 
 

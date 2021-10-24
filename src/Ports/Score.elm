@@ -1,4 +1,4 @@
-port module Score exposing (..)
+port module Ports.Score exposing (..)
 
 import Json.Decode exposing (Decoder)
 import Json.Encode
