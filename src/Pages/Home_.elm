@@ -51,14 +51,6 @@ update msg model =
             ( model, Effect.fromShared Shared.SignOut )
 
 
-
--- SUBSCRIPTIONS
---subscriptions : Model -> Sub Msg
---subscriptions model =
---    Sub.none
--- VIEW
-
-
 view : Request -> Shared.User -> Model -> View Msg
 view req user model =
     { title = "Homepage"

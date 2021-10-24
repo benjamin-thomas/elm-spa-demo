@@ -8,14 +8,28 @@
 <body>
 <script src="/dist/elm.js"></script>
 <script>
+    const store = JSON.parse(localStorage.getItem('store')) || {};
     const app = Elm.Main.init({
-        flags: JSON.parse(localStorage.getItem('storage'))
+        flags: store
     });
 
-    app.ports.save.subscribe(storage => {
-        localStorage.setItem('storage', JSON.stringify(storage))
-        app.ports.load.send(storage);
-    })
+    app.ports.saveScore.subscribe(points => {
+        store.score = points;
+        localStorage.setItem('store', JSON.stringify(store));
+        app.ports.loadScore.send(points);
+    });
+
+    // app.ports.outgoing.subscribe(({tag, data}) => {
+    //     switch (tag) {
+    //         case 'saveUser':
+    //             console.log('Saving user...');
+    //             return localStorage.setItem('user', JSON.stringify(data))
+    //         case 'clearUser':
+    //             return localStorage.removeItem('user')
+    //         default:
+    //             return console.warn(`Unrecognized Port`, tag)
+    //     }
+    // });
 
 </script>
 </body>

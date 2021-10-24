@@ -5,8 +5,8 @@ import Html
 import Html.Events
 import Page
 import Request exposing (Request)
+import Score exposing (Score)
 import Shared
-import Storage exposing (Storage)
 import UI
 import View exposing (View)
 
@@ -16,8 +16,8 @@ page shared req =
     Page.element
         { init = init
         , subscriptions = \_ -> Sub.none
-        , update = update shared.storage
-        , view = view shared.storage req
+        , update = update shared.score
+        , view = view shared.score req
         }
 
 
@@ -43,17 +43,17 @@ type Msg
     | Dec
 
 
-update : Storage -> Msg -> Model -> ( Model, Cmd Msg )
-update storage msg model =
+update : Score -> Msg -> Model -> ( Model, Cmd Msg )
+update score msg model =
     case msg of
         Inc ->
             ( model
-            , Storage.increment storage
+            , Score.increment score
             )
 
         Dec ->
             ( model
-            , Storage.decrement storage
+            , Score.decrement score
             )
 
 
@@ -61,15 +61,15 @@ update storage msg model =
 -- VIEW
 
 
-view : Storage -> Request -> Model -> View Msg
-view storage req _ =
+view : Score -> Request -> Model -> View Msg
+view score req _ =
     { title = "Static"
     , body =
         UI.layout
-            [ Html.h1 [] [ Html.text <| "Counter on " ++ req.url.host ]
+            [ Html.h1 [] [ Html.text <| "Counting points on " ++ req.url.host ]
             , Html.div []
                 [ Html.button [ Html.Events.onClick Dec ] [ Html.text "-" ]
-                , Html.span [] [ Html.text <| String.fromInt storage.counter ]
+                , Html.span [] [ Html.text <| String.fromInt score.points ]
                 , Html.button [ Html.Events.onClick Inc ] [ Html.text "+" ]
                 ]
             ]

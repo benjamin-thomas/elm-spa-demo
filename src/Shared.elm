@@ -17,7 +17,7 @@ module Shared exposing
 import Gen.Route
 import Json.Decode as Json
 import Request exposing (Request)
-import Storage exposing (Storage)
+import Score exposing (Score)
 
 
 type alias Flags =
@@ -30,7 +30,7 @@ type alias User =
 
 
 type alias Model =
-    { storage : Storage
+    { score : Score
     , user : Maybe User
     }
 
@@ -38,12 +38,12 @@ type alias Model =
 type Msg
     = SignIn User
     | SignOut
-    | StorageUpdated Storage
+    | ScoreUpdated Score
 
 
 init : Request -> Flags -> ( Model, Cmd Msg )
 init _ flags =
-    ( { storage = Storage.fromJson flags
+    ( { score = (Score.decodeStore flags).score
       , user = Nothing
       }
     , Cmd.none
@@ -54,15 +54,27 @@ update : Request -> Msg -> Model -> ( Model, Cmd Msg )
 update req msg model =
     case msg of
         SignIn user ->
-            ( { model | user = Just user }, Request.pushRoute Gen.Route.Home_ req )
+            ( { model | user = Just user }
+            , Cmd.batch
+                [ Request.pushRoute Gen.Route.Home_ req
+
+                --, Storage.saveUser user
+                ]
+            )
 
         SignOut ->
-            ( { model | user = Nothing }, Request.pushRoute Gen.Route.Static req )
+            ( { model | user = Nothing }
+            , Cmd.batch
+                [ Request.pushRoute Gen.Route.Static req
 
-        StorageUpdated storage ->
-            ( { model | storage = storage }, Cmd.none )
+                --, Storage.clearUser
+                ]
+            )
+
+        ScoreUpdated score ->
+            ( { model | score = score }, Cmd.none )
 
 
 subscriptions : Request -> Model -> Sub Msg
 subscriptions _ _ =
-    Storage.onChange StorageUpdated
+    Score.onChange ScoreUpdated

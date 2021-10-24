@@ -12,12 +12,14 @@ import View exposing (View)
 
 page : Shared.Model -> Request.With Params -> Page.With Model Msg
 page shared req =
-    Page.advanced
-        { init = init
-        , update = update
-        , view = view
-        , subscriptions = subscriptions
-        }
+    Page.protected.advanced
+        (\user ->
+            { init = init
+            , update = update
+            , view = view
+            , subscriptions = subscriptions
+            }
+        )
 
 
 
