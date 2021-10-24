@@ -24,26 +24,16 @@
     app.ports['saveScore'].subscribe(points => {
         store.score = points;
         saveStore();
+
         app.ports['loadScore'].send(points);
     });
 
     app.ports['saveUser'].subscribe(user => {
         store.user = user;
         saveStore();
+
         app.ports['loadUser'].send(user);
     })
-
-    // app.ports.outgoing.subscribe(({tag, data}) => {
-    //     switch (tag) {
-    //         case 'saveUser':
-    //             console.log('Saving user...');
-    //             return localStorage.setItem('user', JSON.stringify(data))
-    //         case 'clearUser':
-    //             return localStorage.removeItem('user')
-    //         default:
-    //             return console.warn(`Unrecognized Port`, tag)
-    //     }
-    // });
 
 </script>
 </body>

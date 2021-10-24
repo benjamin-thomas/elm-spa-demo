@@ -59,21 +59,15 @@ update req msg model =
 
         UpdateUser maybeUser ->
             let
-                redir =
+                cmd =
                     case maybeUser of
-                        Just user ->
-                            Cmd.batch
-                                [ --Ports.User.setUser user
-                                  Request.pushRoute Gen.Route.Stateful req
-                                ]
+                        Just _ ->
+                            Request.pushRoute Gen.Route.Stateful req
 
                         Nothing ->
-                            Cmd.batch
-                                [ --Ports.User.unsetUser
-                                  Request.pushRoute Gen.Route.Static req
-                                ]
+                            Cmd.none
             in
-            ( { model | user = maybeUser }, redir )
+            ( { model | user = maybeUser }, cmd )
 
 
 subscriptions : Request -> Model -> Sub Msg

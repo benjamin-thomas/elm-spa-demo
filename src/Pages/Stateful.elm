@@ -69,7 +69,8 @@ view user score req _ =
     { title = "My scores"
     , body =
         UI.layout
-            [ Html.h1 [] [ Html.text <| user.name ++ ", your are on server: " ++ req.url.host ]
+            [ Html.h1 [] [ Html.text <| "Hello " ++ user.name ++ "!" ]
+            , Html.h2 [] [ Html.text <| "Your are on server: " ++ req.url.host ]
             , Html.div []
                 [ Html.button [ Html.Events.onClick Dec ] [ Html.text "-" ]
                 , Html.span [] [ Html.text <| String.fromInt score.points ]

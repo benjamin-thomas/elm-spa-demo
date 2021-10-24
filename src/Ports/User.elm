@@ -39,13 +39,3 @@ unsetUser =
 onChange : (Maybe Store.User -> msg) -> Sub msg
 onChange user =
     loadUser (\json -> fromJson json |> user)
-
-
-
---loadUser (\json -> fromJson json |> user)
---onSignIn : (Store.User -> msg) -> Sub msg
---onSignIn user =
---    loadUser (\json -> fromJson json |> user)
---onSignOut : msg -> Sub msg
---onSignOut =
---    loadUser Json.Encode.null

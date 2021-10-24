@@ -1,8 +1,6 @@
 module Pages.Home_ exposing (Model, Msg, page)
 
-import Effect exposing (Effect)
 import Gen.Params.Home_ exposing (Params)
-import Gen.Route
 import Html
 import Html.Events
 import Page
@@ -14,7 +12,7 @@ import View exposing (View)
 
 
 page : Shared.Model -> Request.With Params -> Page.With Model Msg
-page shared req =
+page _ req =
     Page.protected.element
         (\user ->
             { init = init
@@ -43,25 +41,26 @@ init =
 
 
 type Msg
-    = ClickedSigneOut
+    = SignOut
 
 
 update : Request -> Msg -> Model -> ( Model, Cmd Msg )
-update req msg model =
+update _ msg model =
     case msg of
-        ClickedSigneOut ->
+        SignOut ->
             ( model
             , Ports.User.unsetUser
             )
 
 
 view : Request -> Shared.User -> Model -> View Msg
-view req user model =
+view req user _ =
     { title = "Homepage"
     , body =
         UI.layout
-            [ Html.text ("Hello, " ++ user.name ++ "! " ++ "You are on:" ++ req.url.host ++ "!")
+            [ Html.h1 [] [ Html.text <| "Welcome back " ++ user.name ++ "!!" ]
+            , Html.h2 [] [ Html.text <| "Your (still) are on server: " ++ req.url.host ++ "!!" ]
             , Html.p []
-                [ Html.button [ Html.Events.onClick ClickedSigneOut ] [ Html.text "Sign out" ] ]
+                [ Html.button [ Html.Events.onClick SignOut ] [ Html.text "Sign out" ] ]
             ]
     }
