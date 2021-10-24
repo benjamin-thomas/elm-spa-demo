@@ -12,19 +12,24 @@
 <script src="/dist/elm.js"></script>
 <script>
     const store = JSON.parse(localStorage.getItem('store')) || {};
+
+    function saveStore() {
+        localStorage.setItem('store', JSON.stringify(store));
+    }
+
     const app = Elm.Main.init({
         flags: store
     });
 
     app.ports['saveScore'].subscribe(points => {
         store.score = points;
-        localStorage.setItem('store', JSON.stringify(store));
+        saveStore();
         app.ports['loadScore'].send(points);
     });
 
     app.ports['saveUser'].subscribe(user => {
         store.user = user;
-        localStorage.setItem('user', JSON.stringify(user));
+        saveStore();
         app.ports['loadUser'].send(user);
     })
 

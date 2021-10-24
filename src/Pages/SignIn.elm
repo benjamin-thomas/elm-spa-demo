@@ -2,21 +2,24 @@ module Pages.SignIn exposing (Model, Msg, page)
 
 import Effect exposing (Effect)
 import Gen.Params.SignIn exposing (Params)
+import Gen.Route
 import Html exposing (Html)
 import Html.Events
 import Page
-import Request
+import Ports.User
+import Request exposing (Request)
 import Shared
+import Store
 import View exposing (View)
 
 
 page : Shared.Model -> Request.With Params -> Page.With Model Msg
-page shared req =
-    Page.advanced
+page _ req =
+    Page.element
         { init = init
-        , update = update
+        , update = update req
         , view = view
-        , subscriptions = subscriptions
+        , subscriptions = \_ -> Sub.none
         }
 
 
@@ -25,12 +28,12 @@ page shared req =
 
 
 type alias Model =
-    {}
+    { name : String }
 
 
-init : ( Model, Effect Msg )
+init : ( Model, Cmd Msg )
 init =
-    ( {}, Effect.none )
+    ( { name = "Benjamin" }, Cmd.none )
 
 
 
@@ -41,11 +44,13 @@ type Msg
     = ClickedSignIn
 
 
-update : Msg -> Model -> ( Model, Effect Msg )
-update msg model =
+update : Request -> Msg -> Model -> ( Model, Cmd Msg )
+update req msg model =
     case msg of
         ClickedSignIn ->
-            ( model, Effect.fromShared <| Shared.SignIn { name = "Ben" } )
+            ( model
+            , Ports.User.setUser <| Store.User model.name
+            )
 
 
 
@@ -53,7 +58,7 @@ update msg model =
 
 
 subscriptions : Model -> Sub Msg
-subscriptions model =
+subscriptions _ =
     Sub.none
 
 
@@ -62,7 +67,7 @@ subscriptions model =
 
 
 view : Model -> View Msg
-view model =
+view _ =
     { title = "Sign In"
     , body =
         [ Html.button [ Html.Events.onClick ClickedSignIn ] [ Html.text "Sign in" ] ]

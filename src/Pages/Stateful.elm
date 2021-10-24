@@ -14,12 +14,14 @@ import View exposing (View)
 
 page : Shared.Model -> Request.With Params -> Page.With Model Msg
 page shared req =
-    Page.element
-        { init = init
-        , subscriptions = \_ -> Sub.none
-        , update = update shared.score
-        , view = view shared.score req
-        }
+    Page.protected.element
+        (\user ->
+            { init = init
+            , subscriptions = \_ -> Sub.none
+            , update = update shared.score
+            , view = view user shared.score req
+            }
+        )
 
 
 
@@ -62,12 +64,12 @@ update score msg model =
 -- VIEW
 
 
-view : Store.Score -> Request -> Model -> View Msg
-view score req _ =
-    { title = "Static"
+view : Store.User -> Store.Score -> Request -> Model -> View Msg
+view user score req _ =
+    { title = "My scores"
     , body =
         UI.layout
-            [ Html.h1 [] [ Html.text <| "Counting points on " ++ req.url.host ]
+            [ Html.h1 [] [ Html.text <| user.name ++ ", your are on server: " ++ req.url.host ]
             , Html.div []
                 [ Html.button [ Html.Events.onClick Dec ] [ Html.text "-" ]
                 , Html.span [] [ Html.text <| String.fromInt score.points ]

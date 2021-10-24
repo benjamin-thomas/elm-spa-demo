@@ -38,9 +38,7 @@ type alias Model =
 
 
 type Msg
-    = SignIn User
-    | SignOut
-    | UpdateScore Store.Score
+    = UpdateScore Store.Score
     | UpdateUser (Maybe User)
 
 
@@ -56,27 +54,26 @@ init _ flags =
 update : Request -> Msg -> Model -> ( Model, Cmd Msg )
 update req msg model =
     case msg of
-        SignIn user ->
-            ( model
-            , Cmd.batch
-                [ Ports.User.setUser user
-                , Request.pushRoute Gen.Route.Home_ req
-                ]
-            )
-
-        SignOut ->
-            ( model
-            , Cmd.batch
-                [ Ports.User.unsetUser
-                , Request.pushRoute Gen.Route.Static req
-                ]
-            )
-
         UpdateScore score ->
             ( { model | score = score }, Cmd.none )
 
         UpdateUser maybeUser ->
-            ( { model | user = maybeUser }, Cmd.none )
+            let
+                redir =
+                    case maybeUser of
+                        Just user ->
+                            Cmd.batch
+                                [ --Ports.User.setUser user
+                                  Request.pushRoute Gen.Route.Stateful req
+                                ]
+
+                        Nothing ->
+                            Cmd.batch
+                                [ --Ports.User.unsetUser
+                                  Request.pushRoute Gen.Route.Static req
+                                ]
+            in
+            ( { model | user = maybeUser }, redir )
 
 
 subscriptions : Request -> Model -> Sub Msg

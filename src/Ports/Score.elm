@@ -2,7 +2,7 @@ port module Ports.Score exposing (..)
 
 import Json.Decode
 import Json.Encode
-import Store exposing (Store)
+import Store
 
 
 port saveScore : Json.Decode.Value -> Cmd msg

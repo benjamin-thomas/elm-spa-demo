@@ -2,9 +2,11 @@ module Pages.Home_ exposing (Model, Msg, page)
 
 import Effect exposing (Effect)
 import Gen.Params.Home_ exposing (Params)
+import Gen.Route
 import Html
 import Html.Events
 import Page
+import Ports.User
 import Request exposing (Request)
 import Shared
 import UI
@@ -13,10 +15,10 @@ import View exposing (View)
 
 page : Shared.Model -> Request.With Params -> Page.With Model Msg
 page shared req =
-    Page.protected.advanced
+    Page.protected.element
         (\user ->
             { init = init
-            , update = update
+            , update = update req
             , view = view req user
             , subscriptions = \_ -> Sub.none
             }
@@ -31,9 +33,9 @@ type alias Model =
     {}
 
 
-init : ( Model, Effect Msg )
+init : ( Model, Cmd Msg )
 init =
-    ( {}, Effect.none )
+    ( {}, Cmd.none )
 
 
 
@@ -44,11 +46,13 @@ type Msg
     = ClickedSigneOut
 
 
-update : Msg -> Model -> ( Model, Effect Msg )
-update msg model =
+update : Request -> Msg -> Model -> ( Model, Cmd Msg )
+update req msg model =
     case msg of
         ClickedSigneOut ->
-            ( model, Effect.fromShared Shared.SignOut )
+            ( model
+            , Ports.User.unsetUser
+            )
 
 
 view : Request -> Shared.User -> Model -> View Msg
