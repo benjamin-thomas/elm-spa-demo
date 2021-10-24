@@ -10,7 +10,7 @@ type alias Score =
 
 initial : Store
 initial =
-    Store { points = 0 } { name = "Guest" }
+    Store { points = 0 } Nothing
 
 
 type alias User =
@@ -20,7 +20,7 @@ type alias User =
 
 type alias Store =
     { score : Score
-    , user : User
+    , user : Maybe User
     }
 
 
@@ -40,7 +40,7 @@ storeDecoder : Json.Decode.Decoder Store
 storeDecoder =
     Json.Decode.map2 Store
         (Json.Decode.field "score" scoreDecoder)
-        (Json.Decode.field "user" userDecoder)
+        (Json.Decode.field "user" (Json.Decode.maybe userDecoder))
 
 
 decodeStore : Json.Decode.Value -> Store

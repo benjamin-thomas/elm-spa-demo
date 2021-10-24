@@ -17,11 +17,11 @@ toJson user =
         [ ( "name", Json.Encode.string user.name ) ]
 
 
-fromJson : Json.Decode.Value -> Store.User
+fromJson : Json.Decode.Value -> Maybe Store.User
 fromJson json =
     json
         |> Json.Decode.decodeValue Store.userDecoder
-        |> Result.withDefault Store.initial.user
+        |> Result.toMaybe
 
 
 setUser : Store.User -> Cmd msg
@@ -36,6 +36,16 @@ unsetUser =
     Json.Encode.null |> saveUser
 
 
-onChange : (Store.User -> msg) -> Sub msg
+onChange : (Maybe Store.User -> msg) -> Sub msg
 onChange user =
     loadUser (\json -> fromJson json |> user)
+
+
+
+--loadUser (\json -> fromJson json |> user)
+--onSignIn : (Store.User -> msg) -> Sub msg
+--onSignIn user =
+--    loadUser (\json -> fromJson json |> user)
+--onSignOut : msg -> Sub msg
+--onSignOut =
+--    loadUser Json.Encode.null

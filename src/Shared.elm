@@ -17,6 +17,7 @@ module Shared exposing
 import Gen.Route
 import Json.Decode as Json
 import Ports.Score
+import Ports.User
 import Request exposing (Request)
 import Store
 
@@ -40,6 +41,7 @@ type Msg
     = SignIn User
     | SignOut
     | UpdateScore Store.Score
+    | UpdateUser (Maybe User)
 
 
 init : Request -> Flags -> ( Model, Cmd Msg )
@@ -55,27 +57,31 @@ update : Request -> Msg -> Model -> ( Model, Cmd Msg )
 update req msg model =
     case msg of
         SignIn user ->
-            ( { model | user = Just user }
+            ( model
             , Cmd.batch
-                [ Request.pushRoute Gen.Route.Home_ req
-
-                --, Storage.saveUser user
+                [ Ports.User.setUser user
+                , Request.pushRoute Gen.Route.Home_ req
                 ]
             )
 
         SignOut ->
-            ( { model | user = Nothing }
+            ( model
             , Cmd.batch
-                [ Request.pushRoute Gen.Route.Static req
-
-                --, Storage.clearUser
+                [ Ports.User.unsetUser
+                , Request.pushRoute Gen.Route.Static req
                 ]
             )
 
         UpdateScore score ->
             ( { model | score = score }, Cmd.none )
 
+        UpdateUser maybeUser ->
+            ( { model | user = maybeUser }, Cmd.none )
+
 
 subscriptions : Request -> Model -> Sub Msg
 subscriptions _ _ =
-    Ports.Score.onChange UpdateScore
+    Sub.batch
+        [ Ports.Score.onChange UpdateScore
+        , Ports.User.onChange UpdateUser
+        ]
