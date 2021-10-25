@@ -6,6 +6,7 @@ import Html
 import Html.Attributes
 import Html.Events
 import Json.Decode
+import Loading exposing (defaultConfig)
 import Page
 import Process
 import Request
@@ -29,12 +30,12 @@ page _ _ =
 
 
 type alias Model =
-    { firstName : String, lastName : String, serverMessage : String }
+    { firstName : String, lastName : String, serverMessage : String, loadingState : Loading.LoadingState }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( { firstName = "", lastName = "", serverMessage = "Fetching..." }, fakeHttpRequest )
+    ( { firstName = "", lastName = "", serverMessage = "Fetching...", loadingState = Loading.On }, fakeHttpRequest )
 
 
 
@@ -63,10 +64,10 @@ update msg model =
         RxHttpResponse res ->
             case res of
                 Ok str ->
-                    ( { model | serverMessage = str }, Cmd.none )
+                    ( { model | serverMessage = str, loadingState = Loading.Off }, Cmd.none )
 
                 Err _ ->
-                    ( { model | serverMessage = "Could not fetch data!" }, Cmd.none )
+                    ( { model | serverMessage = "Could not fetch data!", loadingState = Loading.Off }, Cmd.none )
 
 
 
@@ -99,13 +100,24 @@ fakeHttpRequest =
         |> Task.attempt RxHttpResponse
 
 
+
+--noinspection SpellCheckingInspection
+
+
+spinnerColor =
+    "#4B4BDEFF"
+
+
 view : Model -> View Msg
 view model =
     { title = "A form"
     , body =
         [ Html.a [ Html.Attributes.href <| Gen.Route.toHref Gen.Route.List ] [ Html.text "GO TO LIST" ]
         , Html.h1 [] [ Html.text "My form!" ]
-        , Html.h2 [] [ Html.text ("Slow request: " ++ model.serverMessage) ]
+        , Html.h2 [ Html.Attributes.style "max-width" "600px" ]
+            [ Loading.render Loading.Circle { defaultConfig | color = spinnerColor, size = 20 } model.loadingState
+            , Html.text ("Slow request: " ++ model.serverMessage)
+            ]
         , Html.pre [] [ Html.text <| Debug.toString model ]
         , Html.form
             [ Html.Attributes.style "display" "flex"
