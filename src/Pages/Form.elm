@@ -53,7 +53,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Submit ->
-            ( { model | firstName = model.firstName, lastName = model.lastName }, Cmd.none )
+            ( model, Cmd.none )
 
         SetFirstName val ->
             ( { model | firstName = val }, Cmd.none )
@@ -108,6 +108,11 @@ spinnerColor =
     "#4B4BDEFF"
 
 
+debugFields : Model -> { firstName : String, lastName : String }
+debugFields model =
+    { firstName = model.firstName, lastName = model.lastName }
+
+
 view : Model -> View Msg
 view model =
     { title = "A form"
@@ -118,7 +123,7 @@ view model =
             [ Loading.render Loading.Circle { defaultConfig | color = spinnerColor, size = 20 } model.loadingState
             , Html.text ("Slow request: " ++ model.serverMessage)
             ]
-        , Html.pre [] [ Html.text <| Debug.toString model ]
+        , Html.pre [] [ Html.text <| Debug.toString <| debugFields model ]
         , Html.form
             [ Html.Attributes.style "display" "flex"
             , onSubmit Submit
