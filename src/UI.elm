@@ -20,6 +20,8 @@ layout children =
     [ Html.div [ Attr.class "container" ]
         [ Html.header [ Attr.class "navbar" ]
             [ viewLink "Home" Route.Home_
+            , viewLink "Form" Route.Form
+            , viewLink "List" Route.List
             , viewLink "Static" Route.Static
             , viewLink "Sandbox" Route.Sandbox
             , viewLink "Element" Route.Element
